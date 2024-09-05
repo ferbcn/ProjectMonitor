@@ -42,7 +42,6 @@ public static class Endpoints
                         Console.WriteLine($"Ping failed for {site.url}: {ex.Message}");
                     }
                 }
-                // download every sites landing page  
                 foreach (var site in json) {
                     if (!site.up) {
                         Console.WriteLine("Site DOWN, not downloading data!");
@@ -78,38 +77,5 @@ public static class Endpoints
             })
             .WithName("GetApi")
             .WithOpenApi();
-        
-        
-    // HTML page endpoint
-    app.MapGet("/dashboard", async context =>
-        {
-            var htmlContent = await File.ReadAllTextAsync("static/dashboard.html");
-            context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(htmlContent);
-        })
-        .WithName("GetDashboardPage")
-        .WithOpenApi();
-    
-    // JavaScript file endpoint
-    app.MapGet("/dashboard.js", async context =>
-        {
-            var jsContent = await File.ReadAllTextAsync("static/dashboard.js");
-            context.Response.ContentType = "application/javascript";
-            await context.Response.WriteAsync(jsContent);
-        })
-        .WithName("GetDashboardJs")
-        .WithOpenApi();
-    
-    // CSS file endpoint
-    app.MapGet("/styles.css", async context =>
-        {
-            var cssContent = await File.ReadAllTextAsync("static/styles.css");
-            context.Response.ContentType = "text/css";
-            await context.Response.WriteAsync(cssContent);
-        })
-        .WithName("GetStylesCss")
-        .WithOpenApi();
-    
-    
     }
 }
