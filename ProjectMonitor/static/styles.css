@@ -9,6 +9,18 @@ h1 {
     color: #ffffff;
 }
 
+a{
+    color: #131353;
+    /*text-decoration: none;*/
+}
+a:visited {
+    color: darkgrey;
+    /*text-decoration: none;*/
+}
+a:hover {
+    color: white;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -44,4 +56,17 @@ button {
 
 button:hover {
     background-color: #555555;
+}
+
+.table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+#site-list-table{
+    width: 90%;
+    margin: 20px auto;
+    border: 1px solid #333333;
 }

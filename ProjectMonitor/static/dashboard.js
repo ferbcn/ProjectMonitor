@@ -9,7 +9,7 @@ async function fetchData() {
         
         row.innerHTML = `
             <td>${site.name}</td>
-            <td>${site.url}</td>
+            <td><a href="https://${site.url}" target="_blank">${site.url}</a></td>
             <td>${site.up ? 'Up' : 'Down'}</td>
             <td>${site.ping_time}</td>
             <td>${site.downloadMillis}</td>

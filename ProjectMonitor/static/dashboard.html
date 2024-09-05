@@ -8,21 +8,29 @@
 
 </head>
 <body>
-<h1>Dashboard</h1>
-<table border='1'>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>URL</th>
-        <th>Status</th>
-        <th>Ping Time (ms)</th>
-        <th>Download Time (ms)</th>
-    </tr>
-    </thead>
-    <tbody id='data-table'>
-    </tbody>
-</table>
-    <button id='refresh'>Refresh</button>
+
+    <div class="table-container">
+        
+        <h1>Dashboard</h1>
+        
+        <table border=1 id="site-list-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Status</th>
+                <th>Ping Time (ms)</th>
+                <th>Download Time (ms)</th>
+            </tr>
+            </thead>
+            <tbody id='data-table'>
+            </tbody>
+        </table>
+            <button id='refresh'>Refresh</button>
+ 
+    </div>
+
 <script src="dashboard.js"></script>
+
 </body>
 </html>

@@ -64,7 +64,7 @@ public static class Endpoints
         // HTML page endpoint
         app.MapGet("/dashboard", async context =>
         {
-            var htmlContent = await File.ReadAllTextAsync("dashboard.html");
+            var htmlContent = await File.ReadAllTextAsync("static/dashboard.html");
             context.Response.ContentType = "text/html";
             await context.Response.WriteAsync(htmlContent);
         })
@@ -74,7 +74,7 @@ public static class Endpoints
         // JavaScript file endpoint
         app.MapGet("/dashboard.js", async context =>
         {
-            var jsContent = await File.ReadAllTextAsync("dashboard.js");
+            var jsContent = await File.ReadAllTextAsync("static/dashboard.js");
             context.Response.ContentType = "application/javascript";
             await context.Response.WriteAsync(jsContent);
         })
@@ -84,7 +84,7 @@ public static class Endpoints
         // CSS file endpoint
         app.MapGet("/styles.css", async context =>
         {
-            var cssContent = await File.ReadAllTextAsync("styles.css");
+            var cssContent = await File.ReadAllTextAsync("static/styles.css");
             context.Response.ContentType = "text/css";
             await context.Response.WriteAsync(cssContent);
         })
