@@ -1,4 +1,7 @@
+const mySpinner = document.getElementById('mySpinner');
+
 async function fetchData() {
+    mySpinner.style.display = 'block';
     const response = await fetch('/dashboard-data');
     const data = await response.json();
     const tableBody = document.getElementById('data-table');
@@ -22,6 +25,7 @@ async function fetchData() {
             row.style.backgroundColor = 'firebrick';
         } 
         
+        mySpinner.style.display = 'none';
         tableBody.appendChild(row);
     });
 }
