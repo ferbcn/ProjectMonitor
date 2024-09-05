@@ -18,5 +18,17 @@
   {
     "name": "Fake Site",
     "url": "fakesitehcgiqzebc733393id.xyz"
+  },
+  {
+    "name": "Pixel Draw .Net (Azure)",
+    "url": "pixeldraw.azurewebsites.net"
+  },
+  {
+    "name": "Socket Paint React (Azure)",
+    "url": "socketpaint.azurewebsites.net"
+  },
+  {
+    "name": "Swiss Chargers (Azure)",
+    "url": "swisschargers.azurewebsites.net"
   }
 ]

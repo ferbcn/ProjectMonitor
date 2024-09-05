@@ -7,7 +7,7 @@ public class Site
     public bool up { get; set; }
     public int ping_time { get; set; }
     
-    public long full_donwload_millis { get; set; }
+    public long downloadMillis { get; set; }
 
     public override string ToString()
     {
