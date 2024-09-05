@@ -53,7 +53,14 @@ public static class Endpoints
         })
         .WithName("GetApi")
         .WithOpenApi();
-
+        
+        // Redirect from / to /dashboard
+        app.MapGet("/", context =>
+        {
+            context.Response.Redirect("/dashboard");
+            return Task.CompletedTask;
+        });
+        
         // HTML page endpoint
         app.MapGet("/dashboard", async context =>
         {
