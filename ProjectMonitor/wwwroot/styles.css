@@ -2,6 +2,7 @@ body {
     background-color: #121212;
     color: #ffffff;
     font-family: Arial, sans-serif;
+    font-size: small;
 }
 
 h1 {
@@ -80,6 +81,7 @@ button:hover {
 
 #site-list-table{
     width: 90%;
+    max-width: 1000px;
     margin: 20px auto;
     border: 1px solid #333333;
 }

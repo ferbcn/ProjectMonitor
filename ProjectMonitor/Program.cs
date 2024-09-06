@@ -37,7 +37,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+
+// Serve static files from the "wwwroot" directory
+app.UseStaticFiles();
 
 // Use CORS middleware.
 // app.UseCors();

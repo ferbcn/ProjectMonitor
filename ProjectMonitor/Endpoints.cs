@@ -54,41 +54,5 @@ public static class Endpoints
         .WithName("GetApi")
         .WithOpenApi();
         
-        // Redirect from / to /dashboard
-        app.MapGet("/", context =>
-        {
-            context.Response.Redirect("/dashboard");
-            return Task.CompletedTask;
-        });
-        
-        // HTML page endpoint
-        app.MapGet("/dashboard", async context =>
-        {
-            var htmlContent = await File.ReadAllTextAsync("static/dashboard.html");
-            context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(htmlContent);
-        })
-        .WithName("GetDashboardPage")
-        .WithOpenApi();
-
-        // JavaScript file endpoint
-        app.MapGet("/dashboard.js", async context =>
-        {
-            var jsContent = await File.ReadAllTextAsync("static/dashboard.js");
-            context.Response.ContentType = "application/javascript";
-            await context.Response.WriteAsync(jsContent);
-        })
-        .WithName("GetDashboardJs")
-        .WithOpenApi();
-
-        // CSS file endpoint
-        app.MapGet("/styles.css", async context =>
-        {
-            var cssContent = await File.ReadAllTextAsync("static/styles.css");
-            context.Response.ContentType = "text/css";
-            await context.Response.WriteAsync(cssContent);
-        })
-        .WithName("GetStylesCss")
-        .WithOpenApi();
     }
 }
