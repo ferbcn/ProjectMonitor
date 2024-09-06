@@ -34,9 +34,7 @@ public static class Endpoints
 
             foreach (var site in json)
             {
-                // site.up = false;
-                try
-                {
+                try {
                     var stopwatch = new System.Diagnostics.Stopwatch();
                     stopwatch.Start();
                     var httpRequest = (HttpWebRequest)WebRequest.Create("https://" + site.url);
@@ -48,7 +46,12 @@ public static class Endpoints
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Site Error: " + e);
+                    if (e is WebException) {
+                        Console.WriteLine("Site Unknown!");
+                    }
+                    else {
+                        Console.WriteLine("Other Site Error: " + e);
+                    }
                     site.up = false;
                     site.ping_time = -1;
                 }
