@@ -24,9 +24,10 @@ public static class Endpoints
                     site.up = result.Status == IPStatus.Success;
                     site.ping_time = (int)result.RoundtripTime;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    site.up = false;
+                    Console.WriteLine("Ping Error: " + e);
+                    // site.up = false;
                     site.ping_time = -1;
                 }
             }
