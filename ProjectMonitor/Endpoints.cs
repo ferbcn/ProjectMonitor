@@ -15,39 +15,42 @@ public static class Endpoints
             var jsonString = File.ReadAllText("site_list.json");
             var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
 
-            foreach (var site in json)
-            {
-                var ping = new Ping();
-                try
-                {
-                    var result = ping.Send(site.url);
-                    site.up = result.Status == IPStatus.Success;
-                    site.ping_time = (int)result.RoundtripTime;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Ping Error: " + e);
-                    // site.up = false;
-                    site.ping_time = -1;
-                }
-            }
+            // foreach (var site in json)
+            // {
+            //     var ping = new Ping();
+            //     try
+            //     {
+            //         var result = ping.Send(site.url);
+            //         site.up = result.Status == IPStatus.Success;
+            //         site.ping_time = (int)result.RoundtripTime;
+            //     }
+            //     catch (Exception e)
+            //     {
+            //         Console.WriteLine("Ping Error: " + e);
+            //         // site.up = false;
+            //         site.ping_time = -1;
+            //     }
+            // }
 
             foreach (var site in json)
             {
-                if (!site.up) continue;
+                // site.up = false;
                 try
                 {
                     var stopwatch = new System.Diagnostics.Stopwatch();
                     stopwatch.Start();
                     var httpRequest = (HttpWebRequest)WebRequest.Create("https://" + site.url);
                     var response = (HttpWebResponse)httpRequest.GetResponse();
-                    int indexFileSize = (int)response.ContentLength;
+                    site.downloadSize = (int)response.ContentLength;
                     stopwatch.Stop();
                     site.downloadMillis = stopwatch.ElapsedMilliseconds;
+                    site.up = true;
                 }
-                catch (SocketException)
+                catch (Exception e)
                 {
-                    site.downloadMillis = -1;
+                    Console.WriteLine("Site Error: " + e);
+                    site.up = false;
+                    site.ping_time = -1;
                 }
             }
             return Results.Ok(json);
