@@ -15,7 +15,7 @@ RUN dotnet restore "ProjectMonitor/ProjectMonitor.csproj"
 
 # Copy the rest of the application files
 COPY . .
-COPY ./ProjectMonitor/static /app/src/ProjectMonitor/static
+COPY ./ProjectMonitor/static ./app/src/ProjectMonitor/static
 
 # Build the application
 WORKDIR "/src/ProjectMonitor"
