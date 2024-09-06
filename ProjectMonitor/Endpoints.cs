@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -43,6 +44,12 @@ public static class Endpoints
                     stopwatch.Stop();
                     site.downloadMillis = stopwatch.ElapsedMilliseconds;
                     site.up = true;
+                    if (site.downloadMillis > 150) { 
+                        site.color = Color.FromArgb(250,220,170, 50);
+                    }
+                    else {
+                        site.color = Color.FromArgb(150,100,200, 100);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -54,6 +61,7 @@ public static class Endpoints
                     }
                     site.up = false;
                     site.ping_time = -1;
+                    site.color = Color.FromArgb(150,200,100, 100);
                 }
             }
             return Results.Ok(json);

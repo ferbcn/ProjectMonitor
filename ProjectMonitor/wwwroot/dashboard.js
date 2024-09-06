@@ -8,7 +8,6 @@ async function fetchData() {
     tableBody.innerHTML = ''; // Clear existing table data
     data.forEach(site => {
         const row = document.createElement('tr');
-        row.style.backgroundColor = 'darkgreen';
         
         row.innerHTML = `
             <td>${site.name}</td>
@@ -16,14 +15,9 @@ async function fetchData() {
             <td>${site.up ? 'Up' : 'Down'}</td>
             <td>${site.downloadMillis}</td>
         `;
-        if (site.downloadMillis > 99) {
-            row.style.backgroundColor = 'orange';
-        }
-        
-        if (!site.up) {
-            row.style.backgroundColor = 'firebrick';
-        } 
-        
+        console.log(site.color);
+        row.style.backgroundColor = convertColor(site.color);
+            
         mySpinner.style.display = 'none';
         tableBody.appendChild(row);
     });
@@ -36,3 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('refresh').addEventListener('click', () => {
     fetchData();
 });
+
+// Convert the color object to a valid CSS color string
+function convertColor(color) {
+    return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a / 255})`;
+}
