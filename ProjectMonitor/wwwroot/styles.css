@@ -132,4 +132,21 @@ button:hover {
         transform: rotate(360deg);
     }
 }
-      
+
+/* Media query for small screens */
+@media (max-width: 600px) {
+    th, td {
+        padding: 5px;
+        font-size: smaller;
+    }
+
+    #site-list-table {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+    }
+
+    .table-container {
+        padding: 0 10px;
+    }
+}
