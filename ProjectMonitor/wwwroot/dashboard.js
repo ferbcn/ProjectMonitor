@@ -17,13 +17,17 @@ async function fetchData() {
                 <div class="col col-2" data-label="URL"><a href="https://${site.url}" target="_blank">${site.url}</a></div>
                 <div class="col col-3" data-label="Status">${site.up ? 'Up' : 'Down'}</div>
                 <div class="col col-4" data-label="Time (ms)">${site.downloadMillis}</div>
+                <div class="col col-5" data-label="Tools">
+                    <div class="tool" ><a href="https://${site.url}" target="_blank">&#128279;</a></div>
+                </div>
         `;
-        
+
         // console.log(site.color);
         row.style.backgroundColor = convertColor(site.color);
             
-        mySpinner.style.display = 'none';
         tableBody.appendChild(row);
+        
+        mySpinner.style.display = 'none';
     });
 }
 
