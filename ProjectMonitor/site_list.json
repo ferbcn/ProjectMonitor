@@ -24,10 +24,6 @@
     "url": "swissdata.xyz"
   },
   {
-    "name": "Fake Site",
-    "url": "fakesitehcgiqzebc733393id.xyz"
-  },
-  {
     "name": "Pixel Draw .Net (Azure)",
     "url": "pixeldraw.azurewebsites.net"
   },
@@ -38,5 +34,9 @@
   {
     "name": "Swiss Chargers (Azure)",
     "url": "swisschargers.azurewebsites.net"
+  },
+  {
+    "name": "Fake Site",
+    "url": "fakesitehcgiqzebc733393id.xyz"
   }
 ]

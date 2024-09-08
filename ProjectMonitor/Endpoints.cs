@@ -16,23 +16,6 @@ public static class Endpoints
             var jsonString = File.ReadAllText("site_list.json");
             var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
 
-            // foreach (var site in json)
-            // {
-            //     var ping = new Ping();
-            //     try
-            //     {
-            //         var result = ping.Send(site.url);
-            //         site.up = result.Status == IPStatus.Success;
-            //         site.ping_time = (int)result.RoundtripTime;
-            //     }
-            //     catch (Exception e)
-            //     {
-            //         Console.WriteLine("Ping Error: " + e);
-            //         // site.up = false;
-            //         site.ping_time = -1;
-            //     }
-            // }
-
             foreach (var site in json)
             {
                 try {
@@ -45,10 +28,10 @@ public static class Endpoints
                     site.downloadMillis = stopwatch.ElapsedMilliseconds;
                     site.up = true;
                     if (site.downloadMillis > 150) { 
-                        site.color = Color.FromArgb(250,220,170, 50);
+                        site.color = Color.FromArgb(200,220,170, 50);
                     }
                     else {
-                        site.color = Color.FromArgb(250,100,150, 100);
+                        site.color = Color.FromArgb(150,100,200, 100);
                     }
                 }
                 catch (Exception e)
@@ -61,7 +44,7 @@ public static class Endpoints
                     }
                     site.up = false;
                     site.ping_time = -1;
-                    site.color = Color.FromArgb(255,220,80, 80);
+                    site.color = Color.FromArgb(150,200,100, 100);
                 }
             }
             return Results.Ok(json);
