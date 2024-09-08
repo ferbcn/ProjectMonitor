@@ -15,7 +15,7 @@ async function fetchData() {
             <td>${site.up ? 'Up' : 'Down'}</td>
             <td>${site.downloadMillis}</td>
         `;
-        console.log(site.color);
+        // console.log(site.color);
         row.style.backgroundColor = convertColor(site.color);
             
         mySpinner.style.display = 'none';
