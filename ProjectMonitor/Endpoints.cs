@@ -48,7 +48,7 @@ public static class Endpoints
                         site.color = Color.FromArgb(250,220,170, 50);
                     }
                     else {
-                        site.color = Color.FromArgb(150,100,200, 100);
+                        site.color = Color.FromArgb(250,100,150, 100);
                     }
                 }
                 catch (Exception e)
@@ -61,7 +61,7 @@ public static class Endpoints
                     }
                     site.up = false;
                     site.ping_time = -1;
-                    site.color = Color.FromArgb(150,200,100, 100);
+                    site.color = Color.FromArgb(255,220,80, 80);
                 }
             }
             return Results.Ok(json);

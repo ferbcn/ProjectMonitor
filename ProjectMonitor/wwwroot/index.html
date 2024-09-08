@@ -13,20 +13,20 @@
     <div class="table-container">
         
         <h1>Dashboard</h1>
+
+        <ul class="responsive-table" id="site-list-table">
+            <li class="table-header">
+                <div class="col col-1">Name</div>
+                <div class="col col-2">URL</div>
+                <div class="col col-3">Status</div>
+                <div class="col col-4">Time (ms)</div>
+            </li>
+            
+            <div id="table-body"></div>
+                
+        </ul>
         
-        <table border=1 id="site-list-table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>URL</th>
-                <th>Status</th>
-                <th>Time (ms)</th>
-            </tr>
-            </thead>
-            <tbody id='data-table'>
-            </tbody>
-        </table>
-            <button id='refresh'>Refresh</button>
+        <button id='refresh'>Refresh</button>
  
     </div>
 
