@@ -8,31 +8,33 @@
 
 </head>
 <body>
-
+    <canvas id="canvas"></canvas>
+    
     <div class="table-container">
         
         <h1>Dashboard</h1>
+
+        <ul id="site-list-table">
+            <li class="table-header">
+                <div class="col col-1">Name</div>
+                <div class="col col-2">URL</div>
+                <div class="col col-3">Status</div>
+                <div class="col col-4">Time (ms)</div>
+                <div class="col col-5">Tools</div>
+            </li>
+            
+            <div id="table-body"></div>
+                
+        </ul>
         
-        <table border=1 id="site-list-table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>URL</th>
-                <th>Status</th>
-                <th>Ping Time (ms)</th>
-                <th>Download Time (ms)</th>
-            </tr>
-            </thead>
-            <tbody id='data-table'>
-            </tbody>
-        </table>
-            <button id='refresh'>Refresh</button>
+        <button id='refresh'>Refresh</button>
  
     </div>
 
     <span id="mySpinner" class="loader"></span>
     
 <script src="dashboard.js"></script>
+<script src="starfield.js"></script>
 
 </body>
 </html>

@@ -4,29 +4,30 @@ async function fetchData() {
     mySpinner.style.display = 'block';
     const response = await fetch('/dashboard-data');
     const data = await response.json();
-    const tableBody = document.getElementById('data-table');
-    tableBody.innerHTML = ''; // Clear existing table data
+    
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = '';
+    
     data.forEach(site => {
-        const row = document.createElement('tr');
-        row.style.backgroundColor = 'darkgreen';
+        const row = document.createElement('li');
+        row.classList.add('table-row');
         
         row.innerHTML = `
-            <td>${site.name}</td>
-            <td><a href="https://${site.url}" target="_blank">${site.url}</a></td>
-            <td>${site.up ? 'Up' : 'Down'}</td>
-            <td>${site.ping_time}</td>
-            <td>${site.downloadMillis}</td>
+                <div class="col col-1" data-label="Name">${site.name}</div>
+                <div class="col col-2" data-label="URL"><a href="https://${site.url}" target="_blank">${site.url}</a></div>
+                <div class="col col-3" data-label="Status">${site.up ? 'Up' : 'Down'}</div>
+                <div class="col col-4" data-label="Time (ms)">${site.downloadMillis}</div>
+                <div class="col col-5" data-label="Tools">
+                    <div class="tool" ><a href="https://${site.url}" target="_blank">&#128279;</a></div>
+                </div>
         `;
-        if (site.downloadMillis > 99) {
-            row.style.backgroundColor = 'orange';
-        }
-        
-        if (!site.up) {
-            row.style.backgroundColor = 'firebrick';
-        } 
+
+        // console.log(site.color);
+        row.style.backgroundColor = convertColor(site.color);
+            
+        tableBody.appendChild(row);
         
         mySpinner.style.display = 'none';
-        tableBody.appendChild(row);
     });
 }
 
@@ -37,3 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('refresh').addEventListener('click', () => {
     fetchData();
 });
+
+
+// Convert the color object to a valid CSS color string
+function convertColor(color) {
+    return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a/255})`;
+}
