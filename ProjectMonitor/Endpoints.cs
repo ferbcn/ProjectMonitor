@@ -1,7 +1,5 @@
 using System.Drawing;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Channels;
 
@@ -17,44 +15,46 @@ public static class Endpoints
                 var jsonString = File.ReadAllText("site_list.json");
                 var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
 
-                foreach (var site in json)
+                if (json != null)
                 {
-                    try
+                    foreach (var site in json)
                     {
-                        var stopwatch = new System.Diagnostics.Stopwatch();
-                        stopwatch.Start();
-                        var httpRequest = (HttpWebRequest)WebRequest.Create("https://" + site.url);
-                        var response = (HttpWebResponse)httpRequest.GetResponse();
-                        site.downloadSize = (int)response.ContentLength;
-                        stopwatch.Stop();
-                        site.downloadMillis = stopwatch.ElapsedMilliseconds;
-                        site.up = true;
-                        if (site.downloadMillis > 150)
+                        try
                         {
-                            site.color = Color.FromArgb(200, 220, 170, 50);
+                            var stopwatch = new System.Diagnostics.Stopwatch();
+                            stopwatch.Start();
+                            var httpRequest = (HttpWebRequest)WebRequest.Create("https://" + site.url);
+                            var response = (HttpWebResponse)httpRequest.GetResponse();
+                            site.downloadSize = (int)response.ContentLength;
+                            stopwatch.Stop();
+                            site.downloadMillis = stopwatch.ElapsedMilliseconds;
+                            site.up = true;
+                            if (site.downloadMillis > 150)
+                            {
+                                site.color = Color.FromArgb(200, 220, 170, 50);
+                            }
+                            else
+                            {
+                                site.color = Color.FromArgb(150, 100, 200, 100);
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
-                            site.color = Color.FromArgb(150, 100, 200, 100);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        if (e is WebException)
-                        {
-                            Console.WriteLine("Site Not reachable:" + site.url);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Other Site Error: " + e);
-                        }
+                            if (e is WebException)
+                            {
+                                Console.WriteLine("Site Not reachable:" + site.url);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Other Site Error: " + e);
+                            }
 
-                        site.up = false;
-                        site.ping_time = -1;
-                        site.color = Color.FromArgb(150, 200, 100, 100);
+                            site.up = false;
+                            site.ping_time = -1;
+                            site.color = Color.FromArgb(150, 200, 100, 100);
+                        }
                     }
                 }
-
                 return Results.Ok(json);
             })
             .WithName("GetApi")
@@ -62,42 +62,36 @@ public static class Endpoints
 
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>
-            {
-                var channel = Channel.CreateUnbounded<string>();
-                _ = WriteToChannel(channel.Writer);
-
-                context.Response.ContentType = "text/event-stream";
-                // context.Response.ContentType = "application/json";
-                await foreach (var data in channel.Reader.ReadAllAsync())
-                {
-                    await context.Response.WriteAsync($"{data}\n");
-                    await context.Response.Body.FlushAsync();
-                }
-                
-                async Task WriteToChannel(ChannelWriter<string> writer)
-                {
-                    await foreach (var data in GenerateEvents())
-                    {
-                        while (!writer.TryWrite(data))
-                        {
-                            // await Task.Delay(TimeSpan.FromMilliseconds(10));
-                        }
-                    }
-
-                    writer.Complete();
-                }
-            }))
-            .WithName("GetApiStream")
-            .WithOpenApi();
-    }
-
-    private static async IAsyncEnumerable<string> GenerateEvents()
-    {
-        var jsonString = File.ReadAllText("site_list.json");
-        var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
-
-        foreach (var site in json)
         {
+            var channel = Channel.CreateUnbounded<string>();
+
+            var jsonString = await File.ReadAllTextAsync("site_list.json");
+            var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
+
+            if (json != null)
+                foreach (var site in json)
+                {
+                    _ = ProcessSiteAsync(site, channel.Writer);
+                }
+
+            context.Response.ContentType = "text/event-stream";
+            await foreach (var data in channel.Reader.ReadAllAsync())
+            {
+                await context.Response.WriteAsync($"{data}\n");
+                await context.Response.Body.FlushAsync();
+            }
+        }));
+
+        async static Task ProcessSiteAsync(Site.Site site, ChannelWriter<string> writer)
+        {
+            Console.WriteLine("Processing Task for site: " + site.url);
+            
+            // delay for debugging purposes
+            // await Task.Delay(TimeSpan.FromMilliseconds(1));
+            
+            // yield control to the runtime, allow other tasks to run asynchronously
+            await Task.Yield();
+            
             try
             {
                 var stopwatch = new System.Diagnostics.Stopwatch();
@@ -108,12 +102,15 @@ public static class Endpoints
                 stopwatch.Stop();
                 site.downloadMillis = stopwatch.ElapsedMilliseconds;
                 site.up = true;
-                if (site.downloadMillis > 150) {
+                if (site.downloadMillis > 150)
+                {
                     site.color = Color.FromArgb(200, 220, 170, 50);
                 }
-                else {
+                else
+                {
                     site.color = Color.FromArgb(150, 100, 200, 100);
                 }
+                await writer.WriteAsync(JsonSerializer.Serialize(site));
             }
             catch (Exception e)
             {
@@ -127,14 +124,9 @@ public static class Endpoints
                 site.up = false;
                 site.ping_time = -1;
                 site.color = Color.FromArgb(150, 200, 100, 100);
+                await writer.WriteAsync(JsonSerializer.Serialize(site));
             }
-            Console.WriteLine(site);
-            
-            yield return JsonSerializer.Serialize(site);
-            await Task.Delay(TimeSpan.FromMilliseconds(site.downloadMillis/100));
+            Console.WriteLine("Finished task for: " + site.url);
         }
-        
-        
     }
-    
 }

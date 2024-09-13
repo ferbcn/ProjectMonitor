@@ -1,5 +1,13 @@
 [
   {
+    "name": "Fake Site",
+    "url": "fakesitehcgiqzebc733393id.xyz"
+  },
+  {
+    "name": "Swiss Chargers (Azure)",
+    "url": "swisschargers.azurewebsites.net"
+  },
+  {
     "name": "ReactNativeApp",
     "url": "lively-water-0ec0ab51e.5.azurestaticapps.net"
   },
@@ -30,13 +38,5 @@
   {
     "name": "Socket Paint React (Azure)",
     "url": "socketpaint.azurewebsites.net"
-  },
-  {
-    "name": "Swiss Chargers (Azure)",
-    "url": "swisschargers.azurewebsites.net"
-  },
-  {
-    "name": "Fake Site",
-    "url": "fakesitehcgiqzebc733393id.xyz"
   }
 ]
