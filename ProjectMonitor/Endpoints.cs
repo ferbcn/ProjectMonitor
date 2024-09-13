@@ -77,7 +77,7 @@ public static class Endpoints
             context.Response.ContentType = "text/event-stream";
             await foreach (var data in channel.Reader.ReadAllAsync())
             {
-                await context.Response.WriteAsync($"{data}\n");
+                await context.Response.WriteAsync($"data: {data}\n\n");
                 await context.Response.Body.FlushAsync();
             }
         }));
