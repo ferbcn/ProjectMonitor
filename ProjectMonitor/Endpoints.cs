@@ -9,57 +9,6 @@ public static class Endpoints
 {
     public static void MapEndpoints(WebApplication app)
     {
-        // Basic data api endpoint (JSON)
-        app.MapGet("/dashboard-data", () =>
-            {
-                var jsonString = File.ReadAllText("site_list.json");
-                var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
-
-                if (json != null)
-                {
-                    foreach (var site in json)
-                    {
-                        try
-                        {
-                            var stopwatch = new System.Diagnostics.Stopwatch();
-                            stopwatch.Start();
-                            var httpRequest = (HttpWebRequest)WebRequest.Create("https://" + site.url);
-                            var response = (HttpWebResponse)httpRequest.GetResponse();
-                            site.downloadSize = (int)response.ContentLength;
-                            stopwatch.Stop();
-                            site.downloadMillis = stopwatch.ElapsedMilliseconds;
-                            site.up = true;
-                            if (site.downloadMillis > 150)
-                            {
-                                site.color = Color.FromArgb(200, 220, 170, 50);
-                            }
-                            else
-                            {
-                                site.color = Color.FromArgb(150, 100, 200, 100);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            if (e is WebException)
-                            {
-                                Console.WriteLine("Site Not reachable:" + site.url);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Other Site Error: " + e);
-                            }
-
-                            site.up = false;
-                            site.ping_time = -1;
-                            site.color = Color.FromArgb(150, 200, 100, 100);
-                        }
-                    }
-                }
-                return Results.Ok(json);
-            })
-            .WithName("GetApi")
-            .WithOpenApi();
-
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>
         {
@@ -81,7 +30,7 @@ public static class Endpoints
                 await context.Response.Body.FlushAsync();
             }
         }));
-
+        
         async static Task ProcessSiteAsync(Site.Site site, ChannelWriter<string> writer)
         {
             Console.WriteLine("Processing Task for site: " + site.url);
@@ -91,7 +40,7 @@ public static class Endpoints
             
             // yield control to the runtime, allow other tasks to run asynchronously
             await Task.Yield();
-            
+            var color = new Color();
             try
             {
                 var stopwatch = new System.Diagnostics.Stopwatch();
@@ -102,18 +51,19 @@ public static class Endpoints
                 stopwatch.Stop();
                 site.downloadMillis = stopwatch.ElapsedMilliseconds;
                 site.up = true;
-                if (site.downloadMillis > 150)
-                {
-                    site.color = Color.FromArgb(200, 220, 170, 50);
+                if (site.downloadMillis > 150) {
+                    color = Color.FromArgb(150, 250, 250, 0);
                 }
-                else
-                {
-                    site.color = Color.FromArgb(150, 100, 200, 100);
+                else {
+                    color = Color.FromArgb(150, 100, 200, 100);
                 }
+                site.colorHex = $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
                 await writer.WriteAsync(JsonSerializer.Serialize(site));
             }
             catch (Exception e)
             {
+                color = Color.FromArgb(150, 200, 50, 50);
+                site.colorHex = $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
                 if (e is WebException) {
                     Console.WriteLine("Site Not reachable:" + site.url);
                 }
@@ -123,9 +73,9 @@ public static class Endpoints
 
                 site.up = false;
                 site.ping_time = -1;
-                site.color = Color.FromArgb(150, 200, 100, 100);
                 await writer.WriteAsync(JsonSerializer.Serialize(site));
             }
+            site.colorHex = $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
             Console.WriteLine("Finished task for: " + site.url);
         }
     }

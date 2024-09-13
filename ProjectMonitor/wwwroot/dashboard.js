@@ -10,7 +10,7 @@ eventSource.onmessage = (event) => {
     const sse_data = event.data;
     // parse the JSON string to object
     const site = JSON.parse(sse_data);
-    // console.log("Data received:", sse_data);
+    console.log("Data received:", sse_data);
     
     const tableBody = document.getElementById('table-body');
 
@@ -26,8 +26,8 @@ eventSource.onmessage = (event) => {
                 <div class="tool" ><a href="https://${site.url}" target="_blank">&#128279;</a></div>
             </div>
     `;
-    console.log("Color: ",site.color);
-    row.style.backgroundColor = convertColor(site.color);
+    // console.log("Color: ",site.colorHex);
+    row.style.backgroundColor = site.colorHex;
     tableBody.appendChild(row);
 
     mySpinner.style.display = 'none';
@@ -47,11 +47,3 @@ eventSource.onopen = () => {
 eventSource.onclose = () => {
     console.log('Disconnected from the SSE endpoint');
 };
-
-
-// Convert the color object to a valid CSS color string
-function convertColor(color) {
-    const colorString = `rgba(${color.R}, ${color.G}, ${color.B}, ${color.A/255})`;
-    console.log("Color String: ",colorString);
-    return colorString;
-}
