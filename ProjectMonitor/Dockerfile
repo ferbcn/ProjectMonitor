@@ -15,10 +15,7 @@ COPY ["ProjectMonitor/ProjectMonitor/ProjectMonitor.csproj", "ProjectMonitor/"]
 #COPY ["ProjectMonitor/ProjectMonitor.csproj", "ProjectMonitor/"]
 
 # Copy SSL
-COPY ../nginx/certs/swissdata.xyz/cert.pem /etc/ssl/certs/aspnetcore.crt
-COPY ../nginx/certs/swissdata.xyz/key.pem /etc/ssl/private/aspnetcore.key
-
-RUN chmod 600 /etc/ssl/private/aspnetcore.key
+# Done in the docker-compose file
 
 # Restore dependencies
 RUN dotnet restore "ProjectMonitor/ProjectMonitor.csproj"
