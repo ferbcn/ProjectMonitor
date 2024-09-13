@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Threading.Channels;
 
@@ -40,14 +41,23 @@ public static class Endpoints
             
             // yield control to the runtime, allow other tasks to run asynchronously
             await Task.Yield();
+            
             var color = new Color();
             try
             {
                 var stopwatch = new System.Diagnostics.Stopwatch();
+                var full_url = "https://" + site.url;
                 stopwatch.Start();
-                var httpRequest = (HttpWebRequest)WebRequest.Create("https://" + site.url);
-                var response = (HttpWebResponse)httpRequest.GetResponse();
-                site.downloadSize = (int)response.ContentLength;
+                
+                // ping site 
+                var ping = new Ping();
+                var result = ping.Send(site.url);
+                site.up = result.Status == IPStatus.Success;
+                site.pingMillis = (int)result.RoundtripTime;
+                
+                using var httpClient = new HttpClient();
+                var response = await httpClient.GetAsync(full_url);
+                site.downloadSize = (int) response.Content.Headers.ContentLength;
                 stopwatch.Stop();
                 site.downloadMillis = stopwatch.ElapsedMilliseconds;
                 site.up = true;
@@ -72,7 +82,7 @@ public static class Endpoints
                 }
 
                 site.up = false;
-                site.ping_time = -1;
+                site.pingMillis = -1;
                 await writer.WriteAsync(JsonSerializer.Serialize(site));
             }
             site.colorHex = $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
