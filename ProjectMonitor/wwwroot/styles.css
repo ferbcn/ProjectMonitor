@@ -123,7 +123,7 @@ li {
         display: none;
     }
     .table-row{
-        padding: 0 0;
+        padding: 5px;
     }
     li {
         display: block;
@@ -133,7 +133,7 @@ li {
     }
     .col {
         display: flex;
-        padding: 10px 0;
+        padding: 2px 0;
         &:before {
             color: #3b3b4b;
             padding-right: 10px;
@@ -143,20 +143,15 @@ li {
         }
     }
     .col-1 {
-        padding: 5px 5px;
         font-weight: bold;
     }
     .col-2 {
-        padding: 5px 5px;
     }
     .col-3 {
-        padding: 5px 5px;
     }
     .col-4 {
-        padding: 5px 5px;
     }
     .col-5 {
-        padding: 5px 5px;
     }
 }
 
