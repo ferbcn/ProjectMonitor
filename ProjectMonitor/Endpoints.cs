@@ -36,7 +36,7 @@ public static class Endpoints
                         {
                             await ProcessSiteAsync(site, channel.Writer);
                         }
-                        await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
+                        await Task.Delay(TimeSpan.FromSeconds(10)); // Delay before processing again
                     }
                 });
 

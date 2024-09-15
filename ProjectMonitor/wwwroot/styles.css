@@ -265,3 +265,16 @@ input:checked + label:after {
 label:active:after {
     width: 130px;
 }
+
+@keyframes highlight {
+    0% {
+        background-color: lightgray;
+    }
+    100% {
+        background-color: inherit;
+    }
+}
+
+.highlight {
+    animation: highlight 0.5s ease-in-out;
+}

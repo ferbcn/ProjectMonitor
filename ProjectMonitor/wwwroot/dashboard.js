@@ -29,15 +29,18 @@ function initializeEventSource() {
         // check if row with id site.url exists
         if (document.getElementById(site.url)) {
             // delete row
-            tableBody.removeChild(document.getElementById(site.url));
+            // tableBody.removeChild(document.getElementById(site.url));
             
-            // // update the row
-            // const row = document.getElementById(site.url);
-            // row.children[2].innerText = site.up ? 'Up' : 'Down';
-            // row.children[3].innerText = site.pingMillis;
-            // row.children[4].innerText = site.downloadMillis;
-            // row.style.backgroundColor = site.colorHex;
-            // return;
+            // update the row
+            const row = document.getElementById(site.url);
+            row.children[2].innerText = site.up ? 'Up' : 'Down';
+            row.children[3].innerText = site.pingMillis;
+            row.children[4].innerText = site.downloadMillis;
+            row.style.backgroundColor = site.colorHex;
+            
+            row.classList.add('highlight');
+            setTimeout(() => row.classList.remove('highlight'), 1000);
+            return;
         }
 
         const row = document.createElement('li');
