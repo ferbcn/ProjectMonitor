@@ -49,8 +49,6 @@ public static class Endpoints
                 }
             }
             
-            // yield control to the runtime, allow other tasks to run asynchronously
-            await Task.Yield();
             
         }));
         
@@ -58,7 +56,8 @@ public static class Endpoints
         {
             Console.WriteLine("Processing Task for site: " + site.url);
             
-
+            // yield control to the runtime, allow other tasks to run asynchronously
+            await Task.Yield();
             
             var color = new Color();
             try
