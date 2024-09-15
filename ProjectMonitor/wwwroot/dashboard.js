@@ -5,7 +5,6 @@ const streamBtn = document.getElementById('stream-toggle'); // Get the streamBut
 const animSwitch = document.getElementById('switch'); // Get the animation switch
 
 let eventSource;
-let streamOn = false;
 
 // Function to initialize the EventSource connection
 function initializeEventSource() {
@@ -17,10 +16,8 @@ function initializeEventSource() {
         if (sse_data === 'DONE') {
             console.log("ALL DONE!");
             // close the connection
-            if (!streamOn) {
-                eventSource.close();
-                console.log("Closing connection...");
-            }
+            eventSource.close();
+            console.log("Closing connection...");
             return;
         }
         const site = JSON.parse(sse_data);
@@ -93,18 +90,18 @@ refreshBtn.addEventListener('click', () => {
     mySpinner.style.display = 'block';
 });
 
-streamBtn.addEventListener('click', () => {
-    if (!streamOn) {
-        tableBody.innerHTML = '';
-        streamOn = true;
-        initializeEventSource();
-        streamBtn.innerText = 'Stop Stream';
-    } else {
-        streamOn = false;
-        eventSource.close();
-        streamBtn.innerText = 'Start Stream';
-    }
-});
+// streamBtn.addEventListener('click', () => {
+//     if (!streamOn) {
+//         tableBody.innerHTML = '';
+//         streamOn = true;
+//         initializeEventSource();
+//         streamBtn.innerText = 'Stop Stream';
+//     } else {
+//         streamOn = false;
+//         eventSource.close();
+//         streamBtn.innerText = 'Start Stream';
+//     }
+// });
 
 animSwitch.addEventListener('change', () => {
     const canvas = document.getElementById('canvas');
