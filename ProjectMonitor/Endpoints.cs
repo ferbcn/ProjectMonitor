@@ -32,7 +32,7 @@ public static class Endpoints
                 {
                     foreach (var site in json)
                     {
-                        ProcessSiteAsync(site, channel.Writer);
+                        await ProcessSiteAsync(site, channel.Writer);
                     }
                 });
 
