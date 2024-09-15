@@ -1,8 +1,11 @@
 const mySpinner = document.getElementById('mySpinner');
 const tableBody = document.getElementById('table-body');
 const refreshBtn = document.getElementById('refresh'); // Get the refreshButton
+const streamBtn = document.getElementById('stream-toggle'); // Get the streamButton
+const animSwitch = document.getElementById('switch'); // Get the animation switch
 
 let eventSource;
+let streamOn = false;
 
 // Function to initialize the EventSource connection
 function initializeEventSource() {
@@ -11,8 +14,31 @@ function initializeEventSource() {
     eventSource.onmessage = (event) => {
         // Update the HTML page with the streamed data
         const sse_data = event.data;
+        if (sse_data === 'DONE') {
+            console.log("ALL DONE!");
+            // close the connection
+            if (!streamOn) {
+                eventSource.close();
+                console.log("Closing connection...");
+            }
+            return;
+        }
         const site = JSON.parse(sse_data);
         console.log("Data received:", sse_data);
+        
+        // check if row with id site.url exists
+        if (document.getElementById(site.url)) {
+            // delete row
+            tableBody.removeChild(document.getElementById(site.url));
+            
+            // // update the row
+            // const row = document.getElementById(site.url);
+            // row.children[2].innerText = site.up ? 'Up' : 'Down';
+            // row.children[3].innerText = site.pingMillis;
+            // row.children[4].innerText = site.downloadMillis;
+            // row.style.backgroundColor = site.colorHex;
+            // return;
+        }
 
         const row = document.createElement('li');
         row.id = site.url;
@@ -45,7 +71,7 @@ function initializeEventSource() {
 
     eventSource.onclose = () => {
         console.log('Disconnected from the SSE endpoint. Reconnecting...');
-        setTimeout(initializeEventSource, 3000); // Reconnect after 3 seconds
+        // setTimeout(initializeEventSource, 3000); // Reconnect after 3 seconds
     };
 }
 
@@ -62,4 +88,26 @@ refreshBtn.addEventListener('click', () => {
 
     // Show the spinner
     mySpinner.style.display = 'block';
+});
+
+streamBtn.addEventListener('click', () => {
+    if (!streamOn) {
+        tableBody.innerHTML = '';
+        streamOn = true;
+        initializeEventSource();
+        streamBtn.innerText = 'Stop Stream';
+    } else {
+        streamOn = false;
+        eventSource.close();
+        streamBtn.innerText = 'Start Stream';
+    }
+});
+
+animSwitch.addEventListener('change', () => {
+    const canvas = document.getElementById('canvas');
+    if (animSwitch.checked) {
+        canvas.style.display = 'block';
+    } else {
+        canvas.style.display = 'none';
+    }
 });

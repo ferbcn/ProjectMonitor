@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Net;
 using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Threading.Channels;
@@ -10,6 +9,8 @@ public static class Endpoints
 {
     public static void MapEndpoints(WebApplication app)
     {
+        var contStreamOn = true;
+        
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>
         {
@@ -17,19 +18,46 @@ public static class Endpoints
 
             var jsonString = await File.ReadAllTextAsync("site_list.json");
             var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
+            
+            var totalSites = json.Count;
+            var processedSites = 0;
 
-            if (json != null)
-                foreach (var site in json)
+            if (totalSites < 1)
+            {
+                await context.Response.WriteAsync("Error: No sites found in site_list.json");
+                return;
+            }
+
+            _ = Task.Run(async () =>
                 {
-                    _ = ProcessSiteAsync(site, channel.Writer);
-                }
+                    while (contStreamOn)
+                    {
+                        foreach (var site in json)
+                        {
+                            await ProcessSiteAsync(site, channel.Writer);
+                        }
+                        await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
+                    }
+                });
 
             context.Response.ContentType = "text/event-stream";
             await foreach (var data in channel.Reader.ReadAllAsync())
             {
                 await context.Response.WriteAsync($"data: {data}\n\n");
                 await context.Response.Body.FlushAsync();
+                processedSites++;
+                if (processedSites == totalSites) {
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    await channel.Writer.WriteAsync("DONE");
+                    await context.Response.Body.FlushAsync();
+                    // await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
+                    // channel.Writer.Complete();
+                    // contStreamOn = false;
+                    await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
+                }
             }
+            
+            
         }));
         
         async static Task ProcessSiteAsync(Site.Site site, ChannelWriter<string> writer)
@@ -51,10 +79,18 @@ public static class Endpoints
                 
                 // ping site 
                 var ping = new Ping();
-                var result = ping.Send(site.url);
-                site.up = result.Status == IPStatus.Success;
-                site.pingMillis = (int)result.RoundtripTime;
+                try {
+                    var result = ping.Send(site.url);
+                    site.up = result.Status == IPStatus.Success;
+                    site.pingMillis = (int)result.RoundtripTime;
+                }
+                catch (PingException e) {
+                    Console.WriteLine("Ping Error!");
+                    site.up = false;
+                    site.pingMillis = -1;
+                }
                 
+                // download site
                 using var httpClient = new HttpClient();
                 var response = await httpClient.GetAsync(full_url);
                 site.downloadSize = (int) response.Content.Headers.ContentLength;
@@ -74,8 +110,8 @@ public static class Endpoints
             {
                 color = Color.FromArgb(150, 200, 50, 50);
                 site.colorHex = $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
-                if (e is WebException) {
-                    Console.WriteLine("Site Not reachable:" + site.url);
+                if (e is HttpRequestException) {
+                    Console.WriteLine("Site Not reachable: " + site.url);
                 }
                 else {
                     Console.WriteLine("Other Site Error: " + e);

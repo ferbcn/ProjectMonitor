@@ -94,3 +94,9 @@ document.getElementById('refresh').addEventListener('click', () => {
     speedMultiplier = 10;
     console.log(speedMultiplier);
 });
+
+// on window resize update the canvas dimensions
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
