@@ -43,13 +43,9 @@ public static class Endpoints
                 await context.Response.Body.FlushAsync();
                 processedSites++;
                 if (processedSites == totalSites) {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
                     await channel.Writer.WriteAsync("DONE");
                     await context.Response.Body.FlushAsync();
-                    // await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
                     // channel.Writer.Complete();
-                    // contStreamOn = false;
-                    await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
                 }
             }
             
