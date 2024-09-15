@@ -9,6 +9,7 @@ public static class Endpoints
 {
     public static void MapEndpoints(WebApplication app)
     {
+        var contStreamOn = true;
         
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>
@@ -40,26 +41,28 @@ public static class Endpoints
             {
                 await context.Response.WriteAsync($"data: {data}\n\n");
                 await context.Response.Body.FlushAsync();
-                
                 processedSites++;
                 if (processedSites == totalSites) {
                     await Task.Delay(TimeSpan.FromSeconds(1));
                     await channel.Writer.WriteAsync("DONE");
                     await context.Response.Body.FlushAsync();
-                    //channel.Writer.Complete();
+                    // await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
+                    // channel.Writer.Complete();
+                    // contStreamOn = false;
+                    await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
                 }
             }
             
+            // yield control to the runtime, allow other tasks to run asynchronously
+            await Task.Yield();
             
         }));
-
-        async Task ProcessSiteAsync(Site.Site site, ChannelWriter<string> writer)
+        
+        async static Task ProcessSiteAsync(Site.Site site, ChannelWriter<string> writer)
         {
             Console.WriteLine("Processing Task for site: " + site.url);
             
-            // yield control to the runtime, allow other tasks to run asynchronously
-            await Task.Yield();
-            await Task.Delay(Random.Shared.Next(1, 1000));
+
             
             var color = new Color();
             try
