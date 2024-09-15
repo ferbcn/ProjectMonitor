@@ -9,8 +9,7 @@ public static class Endpoints
 {
     public static void MapEndpoints(WebApplication app)
     {
-        var contStreamOn = true;
-        
+      
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>
         {
@@ -32,7 +31,7 @@ public static class Endpoints
                 {
                     foreach (var site in json)
                     {
-                        await ProcessSiteAsync(site, channel.Writer);
+                        ProcessSiteAsync(site, channel.Writer);
                     }
                 });
 
