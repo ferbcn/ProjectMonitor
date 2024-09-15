@@ -9,7 +9,6 @@ public static class Endpoints
 {
     public static void MapEndpoints(WebApplication app)
     {
-        var contStreamOn = true;
         
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>
@@ -30,13 +29,9 @@ public static class Endpoints
 
             _ = Task.Run(async () =>
                 {
-                    while (contStreamOn)
+                    foreach (var site in json)
                     {
-                        foreach (var site in json)
-                        {
-                            await ProcessSiteAsync(site, channel.Writer);
-                        }
-                        await Task.Delay(TimeSpan.FromSeconds(10)); // Delay before processing again
+                        await ProcessSiteAsync(site, channel.Writer);
                     }
                 });
 
@@ -45,18 +40,18 @@ public static class Endpoints
             {
                 await context.Response.WriteAsync($"data: {data}\n\n");
                 await context.Response.Body.FlushAsync();
+                
                 processedSites++;
                 if (processedSites == totalSites) {
                     await Task.Delay(TimeSpan.FromSeconds(1));
                     await channel.Writer.WriteAsync("DONE");
                     await context.Response.Body.FlushAsync();
-                    // await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
-                    // channel.Writer.Complete();
-                    // contStreamOn = false;
-                    await Task.Delay(TimeSpan.FromSeconds(5)); // Delay before processing again
+                    //channel.Writer.Complete();
                 }
             }
             
+            // yield control to the runtime, allow other tasks to run asynchronously
+            await Task.Yield();
             
         }));
         
@@ -64,11 +59,7 @@ public static class Endpoints
         {
             Console.WriteLine("Processing Task for site: " + site.url);
             
-            // delay for debugging purposes
-            // await Task.Delay(TimeSpan.FromMilliseconds(1));
-            
-            // yield control to the runtime, allow other tasks to run asynchronously
-            await Task.Yield();
+
             
             var color = new Color();
             try

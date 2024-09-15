@@ -96,7 +96,7 @@ li {
 }
 
 .table-header {
-    background-color: #3b3b4b;
+    background-color: #333333;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.03em;
@@ -254,7 +254,7 @@ label:after {
 }
 
 input:checked + label {
-    background: #2a3c34;
+    background: #333333;
 }
 
 input:checked + label:after {
