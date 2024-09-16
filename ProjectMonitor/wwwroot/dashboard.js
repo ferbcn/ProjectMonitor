@@ -1,7 +1,6 @@
 const mySpinner = document.getElementById('mySpinner');
 const tableBody = document.getElementById('table-body');
 const refreshBtn = document.getElementById('refresh'); // Get the refreshButton
-const streamBtn = document.getElementById('stream-toggle'); // Get the streamButton
 const animSwitch = document.getElementById('switch'); // Get the animation switch
 
 let eventSource;
@@ -49,8 +48,10 @@ function initializeEventSource() {
             <div class="col col-3" data-label="Status">${site.up ? 'Up' : 'Down'}</div>
             <div class="col col-4" data-label="Ping (ms)">${site.pingMillis}</div>
             <div class="col col-5" data-label="Load (ms)">${site.downloadMillis}</div>
-            <div class="col col-6" data-label="Tools">
-                <div class="tool" ><a href="https://${site.url}" target="_blank">&#128279;</a></div>
+            <div class="col col-6 tool-container" data-label="Tools">
+                <div class="tool"><a href="https://${site.url}" target="_blank">🔗</a></div>
+                <div id="term-btn" class="tool" onclick="openTerminal('${site.url}')">🖥</a></div>
+                
             </div>
         `;
         row.style.backgroundColor = site.colorHex;
@@ -90,19 +91,6 @@ refreshBtn.addEventListener('click', () => {
     mySpinner.style.display = 'block';
 });
 
-// streamBtn.addEventListener('click', () => {
-//     if (!streamOn) {
-//         tableBody.innerHTML = '';
-//         streamOn = true;
-//         initializeEventSource();
-//         streamBtn.innerText = 'Stop Stream';
-//     } else {
-//         streamOn = false;
-//         eventSource.close();
-//         streamBtn.innerText = 'Start Stream';
-//     }
-// });
-
 animSwitch.addEventListener('change', () => {
     const canvas = document.getElementById('canvas');
     if (animSwitch.checked) {
@@ -111,3 +99,10 @@ animSwitch.addEventListener('change', () => {
         canvas.style.display = 'none';
     }
 });
+
+
+function openTerminal(url) {
+    console.log("Opening terminal for: ", url);
+    // open new window with terminal
+    window.open('/terminal.html?site=' + url,'_blank');
+}

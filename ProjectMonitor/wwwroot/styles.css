@@ -270,3 +270,51 @@ label:active:after {
 .highlight {
     animation: highlight 0.5s ease-in-out;
 }
+
+.tool-container {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+
+.tool{
+    margin-right: 5px;
+}
+
+/* Terminal Styling */
+.terminal {
+    background-color: #000;
+    padding: 20px;
+    border-radius: 5px;
+    width: 600px;
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.output {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.input-line {
+    display: flex;
+    align-items: center;
+}
+
+.prompt {
+    margin-right: 10px;
+}
+
+input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #7f3393;
+    font-size: 1em;
+    width: 100%;
+}
+
+input::placeholder {
+    color: #777;
+}
