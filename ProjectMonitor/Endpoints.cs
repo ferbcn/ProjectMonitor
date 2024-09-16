@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Text.Json;
@@ -24,13 +25,14 @@ public static class Endpoints
         static string ProcessCommand(string command) {
             return command.ToLower() switch
             {
-                "help" => "Available commands: help, about, clear, exit",
+                "help" => "Available commands: help, about, clear, stats, load, exit",
+                "stats" => $"Memory: {GC.GetTotalMemory(false)/1024000} MBytes, CPU: {Environment.ProcessorCount} cores",
                 "about" => "Terminal Simulator v1.0. Created using HTML, CSS, and JavaScript.",
                 "clear" => string.Empty,
                 _ => $"Command not found: {command}"
             };
         }
-      
+        
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>
         {
@@ -68,7 +70,6 @@ public static class Endpoints
                     // channel.Writer.Complete();
                 }
             }
-            
             
         }));
         
@@ -136,4 +137,5 @@ public static class Endpoints
             Console.WriteLine("Finished task for: " + site.url);
         }
     }
+
 }
