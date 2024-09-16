@@ -58,16 +58,15 @@ public static class Endpoints
             // yield control to the runtime, allow other tasks to run asynchronously
             await Task.Yield();
             
+            // color returned to client
             var color = new Color();
+            
             try
             {
-                var stopwatch = new System.Diagnostics.Stopwatch();
-                var full_url = "https://" + site.url;
-                stopwatch.Start();
                 
-                // ping site 
-                var ping = new Ping();
                 try {
+                    // ping site 
+                    var ping = new Ping();
                     var result = ping.Send(site.url);
                     site.up = result.Status == IPStatus.Success;
                     site.pingMillis = (int)result.RoundtripTime;
@@ -79,8 +78,11 @@ public static class Endpoints
                 }
                 
                 // download site
+                var stopwatch = new System.Diagnostics.Stopwatch();
+                stopwatch.Start();
+                var fullUrl = "https://" + site.url;
                 using var httpClient = new HttpClient();
-                var response = await httpClient.GetAsync(full_url);
+                var response = await httpClient.GetAsync(fullUrl);
                 site.downloadSize = (int) response.Content.Headers.ContentLength;
                 stopwatch.Stop();
                 site.downloadMillis = stopwatch.ElapsedMilliseconds;
