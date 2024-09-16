@@ -9,6 +9,27 @@ public static class Endpoints
 {
     public static void MapEndpoints(WebApplication app)
     {
+        // New endpoint to handle POST commands
+        app.MapPost("/command", async (HttpContext context) =>
+        {
+            using var reader = new StreamReader(context.Request.Body);
+            var rawCommand = await reader.ReadToEndAsync();
+            var command = JsonSerializer.Deserialize<Dictionary<string, string>>(rawCommand)["command"];
+            var response = ProcessCommand(command);
+            
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new { output = response }));
+        });
+
+        static string ProcessCommand(string command) {
+            return command.ToLower() switch
+            {
+                "help" => "Available commands: help, about, clear, exit",
+                "about" => "Terminal Simulator v1.0. Created using HTML, CSS, and JavaScript.",
+                "clear" => string.Empty,
+                _ => $"Command not found: {command}"
+            };
+        }
       
         // Server Sent Events (SSE) endpoint
         app.MapGet("/api-stream", (Func<HttpContext, Task>)(async context =>

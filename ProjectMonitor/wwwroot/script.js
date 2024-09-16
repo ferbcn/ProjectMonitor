@@ -9,17 +9,29 @@ const commands = {
 };
 
 function runCommand(command) {
-    switch (command) {
-        case 'clear':
-            outputDiv.innerHTML = '';
-            break;
-        case 'help':
-        case 'about':
-            appendOutput(commands[command]);
-            break;
-        default:
-            appendOutput(`Command not found: ${command}`);
+    // if command is clear, clear the output div
+    if (command === 'clear') {
+        outputDiv.innerHTML = '';
+        return;
     }
+    else if (command === 'exit') {
+        window.close();
+        return;
+    }
+    
+    // send a post request to the server
+    fetch('/command', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ command })
+    })
+        .then(response => response.json())
+        .then(data => {
+            appendOutput(data.output);
+        });
+    
 }
 
 function appendOutput(text) {
