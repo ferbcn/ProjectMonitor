@@ -1,6 +1,6 @@
 // Endpoints.cs
 
-using ProjectMonitor;
+using ProjectMonitor.Endpoints;
 
 public static class Endpoints
 {

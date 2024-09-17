@@ -13,7 +13,8 @@
   },
   {
     "name": "Art-Intel (Superserv)",
-    "url": "art-intel.site"
+    "url": "art-intel.site",
+    "loadApi": "https://load.mydigital.quest/api-stats" 
   },
   {
     "name": "Rev3rsi (Superserv)",
@@ -29,7 +30,8 @@
   },
   {
     "name": "Swiss Data (SwissServer)",
-    "url": "swissdata.xyz"
+    "url": "swissdata.xyz",
+    "loadApi": "https://load.swissdata.xyz/api-stats"
   },
   {
     "name": "Pixel Draw .Net (Azure)",

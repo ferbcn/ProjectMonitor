@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace ProjectMonitor;
+namespace ProjectMonitor.Endpoints;
 
 // CommandEndpoints.cs
 public static class CommandEndpoints

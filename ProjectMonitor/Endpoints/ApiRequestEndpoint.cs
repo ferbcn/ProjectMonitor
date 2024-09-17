@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ProjectMonitor;
+namespace ProjectMonitor.Endpoints;
 
 // ApiRequestEndpoints.cs
 public static class ApiRequestEndpoints
@@ -25,12 +25,13 @@ public static class ApiRequestEndpoints
         });
     }
 
-    private async static Task<IActionResult> MyRequest()
+    public async static Task<IActionResult> MyRequest()
     {
         Console.WriteLine("Making API request...");
 
         var token = Environment.GetEnvironmentVariable("SERVER_TOKEN");
-        var url = "https://load.mydigital.quest/api-stats";
+        // var url = "https://load.mydigital.quest/api-stats";
+        var url = "https://load.swissdata.xyz/api-stats";
 
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Add("User-Agent", "ProjectMonitor");
