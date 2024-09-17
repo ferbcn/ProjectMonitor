@@ -7,7 +7,7 @@ let eventSource;
 
 // Function to initialize the EventSource connection
 function initializeEventSource() {
-    eventSource = new EventSource('/api-stream');
+    eventSource = new EventSource('/api/stream');
 
     eventSource.onmessage = (event) => {
         // Update the HTML page with the streamed data
