@@ -1,7 +1,6 @@
 // SseEndpoints.cs
 
 using System.Drawing;
-using System.Net.Http.Headers;
 using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Threading.Channels;
@@ -26,7 +25,7 @@ public static class SseEndpoints
                 await context.Response.WriteAsync("Error: No sites found in site_list.json");
                 return;
             }
-
+            
             _ = Task.Run(async () => {
                 foreach (var site in json) {
                     ProcessSiteAsync(site, channel.Writer);
@@ -46,6 +45,56 @@ public static class SseEndpoints
                 }
             }
         });
+        
+        app.MapGet("/api/htmx-stream", async (HttpContext context) =>
+        {
+            var processedSites = 0;
+            var channel = await createChannelAndTasks(context);
+            // Stream data to client reading from channel
+            context.Response.ContentType = "text/event-stream";
+            await foreach (string data in channel.Reader.ReadAllAsync()) {
+                // parse to Site object
+                var site = JsonSerializer.Deserialize<Site.Site>(data);
+                var hexColor = site.colorHex;
+                
+                var htmlResponse = $"data: <li class='table-row' id='{site.url}' style='background-color: {hexColor};'>" +
+                                   $"<div class='col col-1' data-label='Name'>{site.name}</div>" +
+                                   $"<div class='col col-2' data-label='URL'><a href='https://{site.url}' target='_blank'>{site.url}</a></div>" +
+                                   $"<div class='col col-3' data-label='Status'>{site.up}</div>" +
+                                   $"<div class='col col-4' data-label='Ping (ms)'>{site.pingMillis}</div>" +
+                                   $"<div class='col col-5' data-label='Load (ms)'>{site.downloadMillis}</div>" +
+                                   $"<div class='col col-6 tool-container' data-label='Tools'>" +
+                                   $"<div class='tool'><a href='https://{site.url}' target='_blank'>🔗</a></div>" +
+                                   $"<div id='term-btn' class='tool' onclick='openTerminal('{site.url}')'>🖥</a></div>" +
+                                   $"</div>" +
+                                   $"</li>\n\n";
+                
+                await context.Response.WriteAsync(htmlResponse);
+                await context.Response.Body.FlushAsync();
+                Console.WriteLine("Sending htmx response: " + htmlResponse);
+                processedSites++;
+            }
+        });
+    }
+    
+    private async static Task<Channel<string>> createChannelAndTasks(HttpContext context) {
+        
+        var channel = Channel.CreateUnbounded<string>();
+        // Read site list from json 
+        var jsonString = await File.ReadAllTextAsync("site_list.json");
+        var json = JsonSerializer.Deserialize<List<Site.Site>>(jsonString);
+
+        if (json.Count < 1) {
+            await context.Response.WriteAsync("Error: No sites found in site_list.json");
+            return null;
+        }
+
+        _ = Task.Run(async () => {
+            foreach (var site in json) {
+                ProcessSiteAsync(site, channel.Writer);
+            }
+        });
+        return channel;
     }
     
     private async static Task ProcessSiteAsync(Site.Site site, ChannelWriter<string> writer) {
@@ -54,7 +103,8 @@ public static class SseEndpoints
         
         // Read MEM and CPU load from remote API if available
         if (site.loadApi != null && site.loadApi != "") {
-            var okResult = await ApiRequest(site.loadApi);
+            var myApiRequest = new ApiRequest();
+            var okResult = await myApiRequest.MakeApiRequest(site.loadApi);
             if (okResult is OkObjectResult okObjectResult) {
                 LoadStats statsObject = (LoadStats) okObjectResult.Value;
                 Console.WriteLine($"API response for {site.url} - Mem: {statsObject.mem}, CPU: {statsObject.cpu}");
@@ -100,22 +150,5 @@ public static class SseEndpoints
         // Write to channel
         await writer.WriteAsync(JsonSerializer.Serialize(site));
         Console.WriteLine("Finished task for: " + site.url);
-    }
-    
-    public async static Task<IActionResult> ApiRequest(string url)
-    {
-        Console.WriteLine($"Making API request for {url} ...");
-        var token = Environment.GetEnvironmentVariable("SERVER_TOKEN");
-
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("User-Agent", "ProjectMonitor");
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        var response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-
-        var jsonResponseString = await response.Content.ReadAsStringAsync();
-        var jsonResponse = JsonSerializer.Deserialize<LoadStats>(jsonResponseString);
-        return new OkObjectResult(jsonResponse);
     }
 }

@@ -163,6 +163,13 @@ li {
     z-index: -1;
 }
 
+.htmx-request .loader {
+    display: inline;
+}
+
+.htmx-request.loader {
+    display: inline;
+}
 
 .loader {
     position: absolute;

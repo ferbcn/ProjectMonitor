@@ -1,3 +1,5 @@
+const animSwitch = document.getElementById('switch'); // Get the animation switch
+
 
 // Get the canvas element
 const canvas = document.getElementById('canvas');
@@ -90,13 +92,17 @@ function animate() {
 // Start the animation
 animate();
 
-document.getElementById('refresh').addEventListener('click', () => {
-    speedMultiplier = 10;
-    console.log(speedMultiplier);
-});
-
 // on window resize update the canvas dimensions
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+});
+
+animSwitch.addEventListener('change', () => {
+    const canvas = document.getElementById('canvas');
+    if (animSwitch.checked) {
+        canvas.style.display = 'block';
+    } else {
+        canvas.style.display = 'none';
+    }
 });

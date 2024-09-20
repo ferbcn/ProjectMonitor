@@ -11,37 +11,17 @@ public static class ApiRequestEndpoints
     {
         app.MapGet("/api/load", async (HttpContext context) =>
         {
-            var okResult = await MyRequest();
-            if (okResult is OkObjectResult okObjectResult)
-            {
+            var myApiRequest = new ApiRequest();
+            var okResult = await myApiRequest.MakeApiRequest("https://load.mydigital.quest/api-stats");
+            if (okResult is OkObjectResult okObjectResult) {
                 var jsonResponse = okObjectResult.Value as string;
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(jsonResponse);
             }
-            else
-            {
+            else {
                 await context.Response.WriteAsync(JsonSerializer.Serialize(new { output = "API Error" }));
             }
         });
     }
 
-    public async static Task<IActionResult> MyRequest()
-    {
-        Console.WriteLine("Making API request...");
-
-        var token = Environment.GetEnvironmentVariable("SERVER_TOKEN");
-        // var url = "https://load.mydigital.quest/api-stats";
-        var url = "https://load.swissdata.xyz/api-stats";
-
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("User-Agent", "ProjectMonitor");
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        var response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($"{jsonResponse}\n");
-        return new OkObjectResult(jsonResponse);
-    }
 }

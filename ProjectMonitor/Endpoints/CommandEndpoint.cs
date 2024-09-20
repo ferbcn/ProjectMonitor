@@ -11,11 +11,13 @@ public static class CommandEndpoints
         {
             using var reader = new StreamReader(context.Request.Body);
             var rawCommand = await reader.ReadToEndAsync();
-            var command = JsonSerializer.Deserialize<Dictionary<string, string>>(rawCommand)["command"];
+            var command = JsonSerializer.Deserialize<Dictionary<string, string>>(rawCommand)!["command"];
+            var siteUrl = JsonSerializer.Deserialize<Dictionary<string, string>>(rawCommand)!["siteUrl"];
             var response = ProcessCommand(command);
-
+            
+            // return response to client
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new { output = response }));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new { output = siteUrl + ": " + response }));
         });
     }
 

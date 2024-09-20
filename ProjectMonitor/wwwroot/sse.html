@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Site Monitor</title>
+    <meta charset="UTF-8">
+    <title>SSE with htmx</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/sse.js"></script>
     <link rel="stylesheet" href="styles.css">
-
 </head>
+
 <body>
+
     <canvas id="canvas"></canvas>
     
     <div class="table-container">
-        
+    
         <h1>Site Monitor</h1>
-
+    
         <ul id="site-list-table">
             <li class="table-header">
                 <div class="col col-1">Name</div>
@@ -23,28 +25,24 @@
                 <div class="col col-5">Load (ms)</div>
                 <div class="col col-6">Tools</div>
             </li>
-            
-            <div id="table-body"></div>
-                
+
+            <div id="table-body" 
+                 hx-ext="sse" hx-delay="1000" sse-connect="/api/htmx-stream" sse-swap="message" hx-swap="afterend">
+            </div>
         </ul>
-        
-        <div class="button-container">
-            <button id='refresh'>Refresh</button>
-        </div>
-        
+
         <div class="button-container">
             OFF
             <input type="checkbox" id="switch" checked/>
             <label for="switch">Toggle</label>
             ON
         </div>
- 
-    </div>
-
-    <span id="mySpinner" class="loader"></span>
     
-<script src="dashboard.js"></script>
-<script src="starfield.js"></script>
+    </div>
+    
+    <span id="mySpinner" class="loader" style="display: none"></span>
+    
+    <script src="starfield.js"></script>
 
 </body>
 </html>

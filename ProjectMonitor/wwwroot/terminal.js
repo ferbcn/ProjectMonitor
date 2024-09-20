@@ -1,12 +1,8 @@
 const inputField = document.getElementById('input');
 const outputDiv = document.getElementById('output');
 
-
-const commands = {
-    help: 'Available commands: help, about, clear',
-    about: 'Terminal Simulator v1.0. Created using HTML, CSS, and JavaScript.',
-    clear: ''
-};
+const siteUrl = new URLSearchParams(window.location.search).get('site');
+console.log("Terminal for: ", siteUrl);
 
 function runCommand(command) {
     // if command is clear, clear the output div
@@ -25,7 +21,7 @@ function runCommand(command) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ command })
+        body: JSON.stringify({ "command":command, "siteUrl":siteUrl })
     })
         .then(response => response.json())
         .then(data => {

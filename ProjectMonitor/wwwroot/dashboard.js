@@ -1,7 +1,6 @@
 const mySpinner = document.getElementById('mySpinner');
 const tableBody = document.getElementById('table-body');
 const refreshBtn = document.getElementById('refresh'); // Get the refreshButton
-const animSwitch = document.getElementById('switch'); // Get the animation switch
 
 let eventSource;
 
@@ -50,8 +49,8 @@ function initializeEventSource() {
             <div class="col col-5" data-label="Load (ms)">${site.downloadMillis}</div>
             <div class="col col-6 tool-container" data-label="Tools">
                 <div class="tool"><a href="https://${site.url}" target="_blank">🔗</a></div>
-                <div id="term-btn" class="tool" onclick="openTerminal('${site.url}')">🖥</a></div>
-                
+                <div id="term-btn" class="tool" onclick="openTerminal('${site.url}')">🖥</div>
+      
             </div>
         `;
         row.style.backgroundColor = site.colorHex;
@@ -89,15 +88,6 @@ refreshBtn.addEventListener('click', () => {
 
     // Show the spinner
     mySpinner.style.display = 'block';
-});
-
-animSwitch.addEventListener('change', () => {
-    const canvas = document.getElementById('canvas');
-    if (animSwitch.checked) {
-        canvas.style.display = 'block';
-    } else {
-        canvas.style.display = 'none';
-    }
 });
 
 
