@@ -25,9 +25,8 @@
                 <div class="col col-5">Load (ms)</div>
                 <div class="col col-6">Tools</div>
             </li>
-
-            <div id="table-body" 
-                 hx-ext="sse" hx-delay="1000" sse-connect="/api/htmx-stream" sse-swap="message" hx-swap="afterend">
+            <div id="table-body">
+                <div id="table-body-content" hx-ext="sse" sse-connect="/api/htmx-stream" sse-swap="message" hx-swap="afterend"></div>
             </div>
         </ul>
 
