@@ -65,7 +65,7 @@ public static class SseEndpoints
                                    $"<div class='col col-5' data-label='Load (ms)'>{site.downloadMillis}</div>" +
                                    $"<div class='col col-6 tool-container' data-label='Tools'>" +
                                    $"<div class='tool'><a href='https://{site.url}' target='_blank'>🔗</a></div>" +
-                                   $"<div id='term-btn' class='tool' onclick='openTerminal('{site.url}')'>🖥</a></div>" +
+                                   $"<div id='term-btn' class='tool'><a href='terminal.html?site={site.url}' target='_blank'>🖥</a></div>" +
                                    $"</div>" +
                                    $"</li>\n\n";
                 
